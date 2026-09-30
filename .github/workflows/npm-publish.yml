@@ -1,11 +1,11 @@
 name: Publish to NPM
 
+# Tag-bound by design: Actions minutes are shared across the account, so this runs only on a
+# release tag push or a manual run; pushes to main, pull requests and schedules run nothing.
 on:
   push:
-    branches:
-      - main
-  release:
-    types: [created]
+    tags: ['v*']
+  workflow_dispatch:
 
 jobs:
   build-and-publish:
@@ -39,7 +39,7 @@ jobs:
         run: npm ci
 
       - name: Bump version
-        if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[skip ci]')
+        if: github.event_name == 'push' && github.ref_type == 'branch' && !contains(github.event.head_commit.message, '[skip ci]')
         run: |
           npm version patch --no-git-tag-version
           NEW_VERSION=$(node -p "require('./package.json').version")
