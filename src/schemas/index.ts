@@ -1,3 +1,4 @@
+import { isIP } from 'node:net';
 import { z } from 'zod';
 import { RELATIONSHIPS } from '../utils/api.js';
 
@@ -35,14 +36,14 @@ export const GetFileRelationshipArgsSchema = z.object({
 export const GetIpReportArgsSchema = z.object({
   ip: z
     .string()
-    .ip('Must be a valid IP address')
+    .refine((v) => isIP(v) !== 0, 'Must be a valid IP address')
     .describe('IP address to analyze'),
 });
 
 export const GetIpRelationshipArgsSchema = z.object({
   ip: z
     .string()
-    .ip('Must be a valid IP address')
+    .refine((v) => isIP(v) !== 0, 'Must be a valid IP address')
     .describe('IP address to analyze'),
   relationship: z.enum(RELATIONSHIPS.ip).describe('Type of relationship to query'),
 }).merge(PaginationSchema);
