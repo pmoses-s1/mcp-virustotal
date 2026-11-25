@@ -34,5 +34,9 @@ ENV NODE_ENV=production
 # Expose port for HTTP streaming mode
 EXPOSE 3000
 
+# Run as the unprivileged node user (uid 1000) from the base image. The app files stay
+# root-owned, so the server can read but not modify them.
+USER node
+
 # Define the command to run the application
 ENTRYPOINT ["node", "build/index.js"]
